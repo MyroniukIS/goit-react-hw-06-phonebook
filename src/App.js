@@ -1,45 +1,40 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 import './App.css';
-import { v4 } from 'uuid';
 import ContactForm from './components/ContactForm/ContactForm';
 import ContactList from './components/ContactList/ContactList';
 import Filter from './components/Filter/Filter';
 import phonebook from './img/icon.png';
+import { useSelector, useDispatch } from 'react-redux';
+import actions from './redux/contacts/contacts-actions.js';
 
 export default function App() {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+  const items = useSelector(state => state.contacts.items);
+  const filter = useSelector(state => state.contacts.filter);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    setContacts(JSON.parse(window.localStorage.getItem('contacts')) ?? []);
-  }, []);
+  // useEffect(() => {
+  //   setContacts(JSON.parse(window.localStorage.getItem('contacts')) ?? []);
+  // }, []);
 
-  useEffect(() => {
-    window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
   const addContact = (name, number) => {
-    const contact = {
-      id: v4(),
-      name,
-      number,
-    };
-    contacts.map(contact => contact.name).includes(name)
-      ? alert(`Inputed ${name} is already in the contacts`)
-      : setContacts([...contacts, contact]);
+    if (items.find(item => item.name === name)) {
+      alert(`Inputed ${name} is already in the contacts`);
+      return;
+    }
+
+    return dispatch(actions.contactsAdd({ name, number }));
   };
 
   const handleFilterContacts = e => {
-    return setFilter(e.currentTarget.value);
+    return dispatch(actions.contactsFilter(e.currentTarget.value));
   };
 
   const getFilteredContacts = () => {
-    return contacts.filter(({ name }) => name.toLowerCase().includes(filter));
-  };
-
-  const deleteContact = contactId => {
-    setContacts(contacts.filter(contact => contact.id !== contactId));
+    return items.filter(({ name }) => name.toLowerCase().includes(filter));
   };
 
   return (
@@ -52,11 +47,8 @@ export default function App() {
       <ContactForm onSubmit={addContact} />
 
       <h2 className="title">Contacts</h2>
-      <Filter filter={filter} onFilterChange={handleFilterContacts} />
-      <ContactList
-        contacts={getFilteredContacts()}
-        handleDelete={deleteContact}
-      />
+      <Filter onFilterChange={handleFilterContacts} />
+      <ContactList items={getFilteredContacts()} />
     </div>
   );
 }
