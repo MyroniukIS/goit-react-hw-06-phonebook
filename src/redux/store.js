@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import contactsReducer from './contacts/contacts-redusers';
+import contactsReducer from './contacts/contacts-reducers';
 import {
   persistStore,
   persistReducer,
@@ -18,12 +18,12 @@ const persistConfig = {
   storage,
 };
 
-const rootReduser = combineReducers({
+const rootReducer = combineReducers({
   contacts: contactsReducer,
 });
 
 const store = configureStore({
-  reducer: persistReducer(persistConfig, rootReduser),
+  reducer: persistReducer(persistConfig, rootReducer),
   middleware: getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
