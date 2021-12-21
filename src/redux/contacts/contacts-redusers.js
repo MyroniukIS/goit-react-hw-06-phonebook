@@ -19,8 +19,3 @@ export default combineReducers({
   items,
   filter,
 });
-
-//  contacts: {
-//     items: [],
-//     filter: '',
-//   },

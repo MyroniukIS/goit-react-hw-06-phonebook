@@ -12,14 +12,6 @@ export default function App() {
   const filter = useSelector(state => state.contacts.filter);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   setContacts(JSON.parse(window.localStorage.getItem('contacts')) ?? []);
-  // }, []);
-
-  // useEffect(() => {
-  //   window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  // }, [contacts]);
-
   const addContact = (name, number) => {
     if (items.find(item => item.name === name)) {
       alert(`Inputed ${name} is already in the contacts`);
